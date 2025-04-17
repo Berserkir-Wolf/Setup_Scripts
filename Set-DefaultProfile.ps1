@@ -8,33 +8,84 @@
 # to a specified profile. It copies the contents of the specified profile to the default user profile location.
 # --------------------------------------------------------
 
-#region Select Profile
-Write-Host Select the profile you want to copy to the default user profile
-$userprofile = Read-Host "Enter the profile name (e.g. localuser)"
-#endregion
 
-#region Confirm Profile
+
+
+#region Set-UserProfileName
+# This function prompts the user to enter a profile name and returns it.
+Set-UserProfileName{
+$profilename = Read-Host "Enter the profile name you wish to copy to the default user profile (e.g. localuser)"
+return $profilename
+}
+#endregion
+#region Test-UserProfileName
+# This function checks if the specified profile name exists in the C:\Users directory.
+Test-UserProfileName($profilename){
+$profilePath = "C:\Users\$profilename"
+if (Test-Path $profilePath) {
+    Write-Host "Profile exists: $profilePath"
+    return $true
+} else {
+    Write-Host "Profile does not exist: $profilePath"
+    return $false
+}
+}
+#endregion
+#region Main Script
+$profilename = Set-UserProfileName
+If (Test-UserProfileName($profilename)) {
+    #Do the things
+} else {
+    Write-Host "Profile does not exist: $profilename"
+    Write-Host "Please check the profile name and try again."
+    Set-UserProfileName
+}
+
+
+
+
+#region Select Profile
+Get-Userprofile($profilename)
+#endregion
+#region Confirm Profile exists
 Write-Host "You have selected the profile: $userprofile"
-Write-Host "Do you want to continue? (Y/N)"
-$confirm = Read-Host "Enter Y to continue or N to cancel"
-if ($confirm -eq 'N') {
-    Write-Host "Script cancelled."
-    exit
-} elseif ($confirm -ne 'Y') {
-    Write-Host "Invalid input. Exiting script."
-    exit
+$profileexists = (Test-Path "C:\Users\$userprofile" -ErrorAction SilentlyContinue)
+if ($profileexists) {
+    $confirm = Read-Host "Profile exists. Do you want to continue? (Y/N)"
+#    if ($confirm -eq 'N') {
+#        Write-Host "Script cancelled."
+#        exit
+#    } elseif ($confirm -ne 'Y') {
+#        Write-Host "Invalid input. Exiting script."
+#        exit
+    }
+    else {
+        Write-Host "Continuing with profile: $userprofile"
+    }
+elseif !($?) {
+    Write-Host "Profile does not exist. Please check the profile name and try again."
+}
+
+else {
+    Write-Host "An error has occurred. Please try again."
 }
 #endregion
 
-:selectprofile
-cls
-echo / / / / / / / / / / / / / / / / / / / / / / / / / / / /
-echo Win8 Profile Copy Script
-echo / / / / / / / / / / / / / / / / / / / / / / / / / / / /
-echo Press 1 to continue
-echo Press 2 to cancel
+#region Get-UserProfile
+Function Get-Userprofile{
+    param(
+        [string]$profileName
+    )
+    $profilePath = "C:\Users\$profileName"
+    if (Test-Path $profilePath) {
+        return $profilePath
+    } else {
+        Write-Host "Profile not found: $profilePath"
+        return $null
+    }
+}
+#endregion
 
-echo.
 set PROFILE=
 choice /c 12
 if errorlevel 3 set PROFILE=localuser
