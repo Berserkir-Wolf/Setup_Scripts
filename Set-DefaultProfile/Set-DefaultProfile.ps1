@@ -15,7 +15,8 @@
 $profilename = Set-UserProfileName
 If (Test-UserProfileName($profilename)) {
     Backup-DefaultProfile
-    #Do the things
+    Write-Host $result
+    Copy-DefaultProfile($profilename)
 } else {
     Write-Host "Profile does not exist: $profilename"
     Write-Host "Please check the profile name and try again."
@@ -46,10 +47,33 @@ if (Test-Path $profilePath) {
 #endregion
 #region Backup-DefaultProfile
 function Backup-DefaultProfile {
-    param (
-        OptionalParameters
-    )
-    
+    If(Test-Path "C:\Users\Default_Backup" -ErrorAction SilentlyContinue){
+        Write-Host "Previous backup already exists, updating backup."
+        Remove-Item -Path "C:\Users\Default_Backup" -Recurse -Force -ErrorAction SilentlyContinue
+        Copy-Item -Path "C:\Users\Default" -Destination "C:\Users\Default_Backup" -Recurse -Force
+        Write-Host "Backup completed."
+        $result = "Backup updated."
+    } else {
+        Write-Host "Backing up default profile..."
+        Copy-Item -Path "C:\Users\Default" -Destination "C:\Users\Default_Backup" -Recurse -Force
+        Write-Host "Backup completed."
+        $result = "Backup created."
+    }
+    return $result
 }
 #endregion
+#region Copy-DefaultProfile
+function Copy-DefaultProfile {
+    param (
+        [string]$profilename
+    )
+    Write-Host "Copying profile $profilename to default profile..."
+    #xcopy /e (include empty)
+    #xcopy /c (continue on error) DONE
+    #xcopy /h (include hidden and system)
+    #xcopy /k (include attributes)
+    #xcopy /y (suppress prompting) DONE
+    Copy-Item -Path "C:\Users\$profilename" -Destination "C:\Users\Default" -Recurse -Force -ErrorAction SilentlyContinue
+    Write-Host "Profile copied successfully."
+}
 #endregion Functions

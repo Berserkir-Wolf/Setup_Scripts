@@ -36,6 +36,7 @@ if errorlevel 2 goto enderror
 if errorlevel 1 goto backupdefaultprofile
 
 :backupdefaultprofile
+rem done
 attrib -h “C:\Users\Default”
 if exist “C:\Users\Default_Backup” rmdir /s /q “C:\Users\Default_Backup”
 ping 127.0.0.1 -n 6 -w 1000 > nul
