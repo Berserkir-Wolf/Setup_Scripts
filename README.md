@@ -8,46 +8,72 @@ This one takes a specified user profile and copies it into the 'Default' profile
 
 Functions needed:
 
-- Set Profile
-  - Prompt
-- Test Profile exists
-  - If not, exit/retry?
-- Confirm processing
-  - If yes:
-    - Backup Old Default, confirm success
-    - Create new default
-    - Copy Files
-    - Confirm Success
-  - If no:
-    - exit
+- [ ] Set Profile
+  - [ ] Prompt
+- [ ] Test Profile exists
+  - [ ] If not, exit/retry?
+- [ ] Confirm processing
+  - [ ] If yes:
+    - [ ] Backup Old Default, confirm success
+    - [ ] Create new default
+    - [ ] Copy Files
+    - [ ] Confirm Success
+  - [ ] If no:
+    - [ ] exit
   
-## Setup-DefaultHP
+## Setup-DefaultPC
 
 This one uninstalls the HP Bloat from a new machine, and sets some default configurations.
 
 Functions needed:
 
-- Uninstall applications
-  - HP Wolf Security
-  - HP Wolf Security (console)
-  - MyHP
-  - HP
-- Set default language
-  - Install NZ Language pack
-  - Set as default
-  - Remove US
-  - Set System Locale to English (New Zealand)
-- Install tools?
-  - Outlook Classic
-  - Acrobat
-  - Chrome
-  - Teamviewer
-    - Place in C:\Users\Public\Downloads
-    - Place shortcut in C:\Users\Public\Desktop
-  - Office
-    - Place shortcuts in C:\Users\Public\Desktop
-      - Outlook
-      - Word
-      - Excel
-- Activate desktop icon for "This PC"
-- Set Clarity-Wallpaper04 as background
+- [ ] Uninstall applications
+  - [ ] If HP
+    - [ ] HP Wolf Security
+    - [ ] HP Wolf Security (console)
+    - [ ] MyHP
+    - [ ] HP
+  - [ ] If Lenovo
+    - [ ] ?
+- [ ] Set default language
+  - [ ] Install NZ Language pack
+  - [ ] Set as default
+  - [ ] Remove US
+  - [ ] Set System Locale to English (New Zealand)
+- [ ] Install tools?
+  - [ ] Outlook Classic
+  - [ ] Acrobat
+  - [ ] Chrome
+  - [ ] Teamviewer
+    - [ ] Place in C:\Users\Public\Downloads
+    - [ ] Place shortcut in C:\Users\Public\Desktop
+  - [ ] Office
+    - [ ] Place shortcuts in C:\Users\Public\Desktop
+      - [ ] Outlook
+      - [ ] Word
+      - [ ] Excel
+  - [ ] Default Profile
+    - [ ] Sysprep?
+- [ ] Activate desktop icon for "This PC"
+- [ ] Set Clarity-Wallpaper04 as background
+
+## Configure-365Tenant
+
+Functions needed:
+
+- [ ] Exchange
+  - [ ]Convert exchange script to function(s), have triggered by parameter
+  - [ ] Make antispam a boolean, trigger if true (-spamrules=$true, default $false)
+  - [ ] Add extra filters to list
+    - [ ] Attachment types etc (-dangerousfiles=$true?, default=$false)
+- [ ] Sharepoint
+  - [ ] Allow setting parameters for tenant name
+  - [ ] Add function to rename communications folder to work
+  - [ ] Add function to create base folder structure from comma separated list via parameter
+- [ ] All
+  - [ ] Set up functions to activate if relevant parameter not blank
+    - [ ] if tenant specified do rename
+    - [ ] if folders specified do create
+    - [ ] if exchangerules is not false do rules
+    - [ ] if additionalalias is true add additional mail addresses
+      - [ ] If $add alias, get all mailboxes and add additional mailalias of "smtp:name@$additionalalias" for each.
