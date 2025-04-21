@@ -12,15 +12,62 @@
 
 function Setup-DefaultPC{
     param(
-        [string]$HPBloat = "",
-        [string]$LenovoBloat = "",
-        [string]$MicrosoftBloat = ""
+        [Parameter(Mandatory=$true, HelpMessage="What manufacturer is this PC?")][string]$Manufacturer = ""
     )
     # Check if the script is running with administrative privileges
     if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
         Write-Host "This script requires administrative privileges. Please run it as an administrator."
         exit
     }
-    
+    Remove-ManufacturerBloat -Manufacturer $Manufacturer
+    Remove-MicrosoftBloat
 }
 
+Remove-ManufacturerBloat{
+    param(
+        [string]$Manufacturer = ""
+    )
+    # Remove manufacturer bloatware based on the specified manufacturer
+    switch ($Manufacturer) {
+        "HP" {
+            Write-Host "Removing HP bloatware..."
+            # Add commands to remove HP bloatware here
+        }
+        "Lenovo" {
+            Write-Host "Removing Lenovo bloatware..."
+            # Add commands to remove Lenovo bloatware here
+        }
+        "Generic"{
+            Write-Host "Removing generic bloatware..."
+            # Add commands to remove generic bloatware here
+        }
+        default {
+            Write-Host "No manufacturer specified or unsupported manufacturer."
+        }
+    }
+}
+
+Remove-MicrosoftBloat{
+    param(
+        [string[]]$MicrosoftBloat = @("Xbox","Mail","Weather","News","Sports","Money","Maps","Movies & TV")
+    )
+    ForEach($Bloatware in $MicrosoftBloat) {
+        Write-Host "Removing $Bloatware..."
+        # Remove the specified Microsoft bloatware
+        Get-AppxPackage -Name $BloatwareBloat -AllUsers | ForEach-Object {
+            Remove-AppxPackage -Package $_.PackageFullName -ErrorAction SilentlyContinue
+        }
+    }
+        Write-Host "Microsoft bloatware removal completed."
+    }
+
+    Set-LanguageOptions{
+        param(
+            [string]$Language = "en-NZ",
+            [string]$Region = "NZ"
+        )
+        # Set the language and region options
+        Set-WinUserLanguageList -Language $Language -Force
+        Set-WinSystemLocale -SystemLocale $Region
+        Set-Culture -CultureInfo $Language
+    }
