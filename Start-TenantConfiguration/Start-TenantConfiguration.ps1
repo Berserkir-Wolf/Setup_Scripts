@@ -47,7 +47,7 @@ New-TransportRule -Name "Block nasty files" -Priority 4 -Mode Enforce -FromScope
 }
 #endregion
 
-function Configure-365Tenant {
+function Start-TenantConfiguration {
 #region Parameters (domain)
 param(
 [Parameter(Mandatory=$true, HelpMessage="What domain is this for?")][string]$domain=""
