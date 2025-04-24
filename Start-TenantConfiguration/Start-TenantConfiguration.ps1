@@ -6,6 +6,8 @@
 # comments: 
 # --------------------------------------------------------
 Import-Module ExchangeOnlineManagement
+#Import-Module Microsoft.Online.SharePoint.PowerShell
+
 #region Configure AntiSpoofing Rule
 function Set-AntiSpoofing {
 param(
