@@ -21,9 +21,9 @@ Functions needed:
   - [ ] If no:
     - [ ] exit
   
-## Setup-DefaultPC
+## Start-PCSetup
 
-This one uninstalls the HP Bloat from a new machine, and sets some default configurations.
+This one uninstalls the bloat from a new machine, and sets some default configurations.
 
 Functions needed:
 
