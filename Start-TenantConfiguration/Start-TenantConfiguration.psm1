@@ -94,7 +94,6 @@ param(
 New-TransportRule -Name 'Spam' -Priority 2 -Mode Enforce -SenderAddressLocation Header -RecipientAddressType Resolved -FromAddressContainsWords 'postmaster','mailer-daemon' -DeleteMessage $true
 }
 #endregion
-
 #region Configure External Sender Disclaimer Rule
 function Set-ExternalDisclaimer {
 param(
