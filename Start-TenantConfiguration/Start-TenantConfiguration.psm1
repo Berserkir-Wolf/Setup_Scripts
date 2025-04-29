@@ -91,7 +91,7 @@ function Start-TenantConfiguration {
                 Rename-SharepointSite
             }
             #endregion
-            
+
             #region Disconnect from Sharepoint Online
             Disconnect-SPOService -Confirm:$false
             #endregion
@@ -147,9 +147,10 @@ New-TransportRule -Name "Block nasty files" -Priority 4 -Mode Enforce -FromScope
 function Rename-SharepointSite {
 param(
 ) 
-need to get sites, filter by title to get the correct site, then change the title of the site to the new name
 $site = Get-SPOSite -Limit All | Where-Object { $_.Title -eq "Communication" }
 $site | Set-SPOSite -Title "Work"
 }
+
+# These will need to go in order to make a PS1 script rather than a module
 Export-ModuleMember -Function *
 Export-ModuleMember -Variable *
