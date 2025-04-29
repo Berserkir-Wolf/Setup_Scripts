@@ -2,6 +2,15 @@
 
 A group of system configuration tools written in whatever language is most relevant for them.
 
+To use directly, use the raw url of the script in an "Invoke-RestMethod" command, piped to Invoke-Expression.  
+`irm 'path-to-file' | iex`
+
+| Script | Command |
+| ---- | ---- |
+| Set-DefaultProfile | `irm https://github.com/Berserkir-Wolf/Setup_Scripts/raw/refs/heads/main/Start-PCSetup/Start-PCSetup.ps1 \| iex` |
+| Start-PCSetup | `irm https://raw.githubusercontent.com/Berserkir-Wolf/Setup_Scripts/refs/heads/main/Start-PCSetup/Start-PCSetup.ps1 \| iex` |
+| Start-TenantConfiguration | `irm https://raw.githubusercontent.com/Berserkir-Wolf/Setup_Scripts/refs/heads/main/Start-TenantConfiguration/Start-TenantConfiguration.psm1 \| iex` |
+
 ## Set-DefaultProfile
 
 This one takes a specified user profile and copies it into the 'Default' profile folder, to get new user profiles to use it as a template.
