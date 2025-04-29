@@ -13,7 +13,7 @@ function Start-TenantConfiguration {
     [Parameter(Mandatory=$false, HelpMessage="Configure default Exchange rules?")][bool]$ExchangeRules = $true,
     [Parameter(Mandatory=$false, HelpMessage="Configure Sharepoint?")][bool]$Sharepoint = $false,
     [Parameter(Mandatory=$false, HelpMessage="What is the Sharepoint Admin URL?")][string]$SharepointUrl = "",
-    [Parameter(Mandatory=$false, HelpMessage="Configure default Sharepoint folder?")][bool]$SharepointFolder = $false
+    [Parameter(Mandatory=$false, HelpMessage="Configure default Sharepoint site?")][bool]$RenameSharepoint = $false
     )
     #endregion
     #region Check if the script is running with administrative privileges
@@ -79,18 +79,27 @@ function Start-TenantConfiguration {
         }
         #endregion
         #region Connect to Sharepoint Online and check if the connection was successful
-        Connect-SpoService -Url "$sharepointUrl"
+        Connect-SpoService -Url "$SharepointUrl"
         if (-not (Get-SPOSite)) {
             Write-Host "Failed to connect to Sharepoint Online. Please check your credentials and try again."
             exit
         } else {
             Write-Host "Connected to Sharepoint Online successfully."
+            #region Rename Communication site to Work
+            if($RenameSharepoint) {
+                Write-Host "Renaming Sharepoint Communication site to Work"
+                Rename-SharepointSite
+            }
+            #endregion
+            
+            #region Disconnect from Sharepoint Online
+            Disconnect-SPOService -Confirm:$false
+            #endregion
         }
         #endregion
     } else {
     Write-Host "Skipping Sharepoint setup for $SharepointUrl"
     }
-    
     #endregion
     }
 
@@ -134,14 +143,13 @@ New-TransportRule -Name "Block nasty files" -Priority 4 -Mode Enforce -FromScope
 }
 #endregion
 
-#region Configure Sharepoint Folder
-function Set-SharepointFolder {
+#region Configure Sharepoint Site
+function Rename-SharepointSite {
 param(
-[string]$MailDomain
 ) 
-
-$ctx.ExecuteQuery()
-$folderItem = $ctx.Web.Lists.GetByTitle("Documents").RootFolder.Folders.Add($folderName)
-#endregion
+need to get sites, filter by title to get the correct site, then change the title of the site to the new name
+$site = Get-SPOSite -Limit All | Where-Object { $_.Title -eq "Communication" }
+$site | Set-SPOSite -Title "Work"
+}
 Export-ModuleMember -Function *
 Export-ModuleMember -Variable *
