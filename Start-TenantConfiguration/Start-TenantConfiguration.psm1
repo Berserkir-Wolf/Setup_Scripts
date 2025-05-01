@@ -89,6 +89,7 @@ function Start-TenantConfiguration {
             if($RenameSharepoint) {
                 Write-Host "Renaming Sharepoint Communication site to Work"
                 Rename-SharepointSite
+                
             }
             #endregion
 
@@ -145,10 +146,11 @@ New-TransportRule -Name "Block nasty files" -Priority 4 -Mode Enforce -FromScope
 
 #region Configure Sharepoint Site
 function Rename-SharepointSite {
-param(
-) 
-$site = Get-SPOSite -Limit All | Where-Object { $_.Title -eq "Communication" }
-$site | Set-SPOSite -Title "Work"
+#param(
+#) 
+$site = Get-SPOSite -Limit All | Where-Object { $_.Title -eq "Communication Site" }
+Set-SPOSite  Identity $site.Url -Title "Work"
+return $site.Url
 }
 
 # These will need to go in order to make a PS1 script rather than a module
