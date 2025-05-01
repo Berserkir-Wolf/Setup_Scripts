@@ -10,9 +10,29 @@
 # It is recommended to run it in a PowerShell session with elevated permissions.
 # --------------------------------------------------------
 
+<#
+.SYNOPSIS
+    This script sets the default user profile for Windows 10/11 to a specified profile.
+    It copies the contents of the specified profile to the default user profile location.
+.NOTES
+    This script is designed to be run with administrative privileges.
+    It is recommended to run it in a PowerShell session with elevated permissions.
+.PARAMETER profilename
+    The name of the profile to copy to the default user profile.
+    If not provided, the script will prompt for a profile name.
+
+#>
+parameter(
+    [Parameter(Mandatory=$false, HelpMessage="What profile do you want to copy to the default user profile?")][string]$profilename
+)
 
 #region Main Script
-$profilename = Set-UserProfileName
+if($profilename)
+{
+    Write-Host "Profile name provided: $profilename"
+} else {
+    $profilename = Set-UserProfileName
+}
 If (Test-UserProfileName($profilename)) {
     Backup-DefaultProfile
     Write-Host $result
