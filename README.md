@@ -68,6 +68,8 @@ Functions needed:
 
 ## Configure-365Tenant
 
+### Usage
+
 Functions needed:
 
 - [ ] Exchange
@@ -76,8 +78,8 @@ Functions needed:
   - [ ] Add extra filters to list
     - [ ] Attachment types etc (-dangerousfiles=$true?, default=$false)
 - [ ] Sharepoint
-  - [ ] Allow setting parameters for tenant name
-  - [ ] Add function to rename communications folder to work
+  - [X] Allow setting parameters for tenant name
+  - [X] Add function to rename communications folder to work
   - [ ] Add function to create base folder structure from comma separated list via parameter
 - [ ] All
   - [ ] Set up functions to activate if relevant parameter not blank
