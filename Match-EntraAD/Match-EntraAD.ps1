@@ -75,7 +75,8 @@ if (-not (Get-MgContext)) {
 # The ImmutableId is the ObjectGUID of the local AD user, converted to a base64 string
 # The ObjectGUID is the unique identifier for the user in local AD
 # A powershell version of ldifde -f export.txt -r "(Userprincipalname=*)" -l "objectGuid, userPrincipalName"
-Get-ADUser -Filter * -SearchBase "OU=Users_Staff, DC=nolantest,DC=local" -properties * | Select-Object UserPrincipalName,ObjectGUID,@{n="ImmutableID";e={[System.Convert]::ToBase64String($_.ObjectGUID.tobytearray())} },EmailAddress |Export-CSV C:\Testing\immutableIDs.csv -NoClobber -NoTypeInformation
+$OU = Read-Host 'Enter the full OU to search for local AD users (e.g. "OU=Users_Staff,DC=domain,DC=local")'
+Get-ADUser -Filter * -SearchBase $OU -properties * | Select-Object UserPrincipalName,ObjectGUID,@{n="ImmutableID";e={[System.Convert]::ToBase64String($_.ObjectGUID.tobytearray())} },EmailAddress |Export-CSV C:\Testing\immutableIDs.csv -NoClobber -NoTypeInformation
 #endregion
 #region Import the CSV file
 $localusers = Import-Csv C:\Testing\immutableIDs.txt
