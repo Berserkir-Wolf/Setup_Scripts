@@ -15,6 +15,7 @@
 #>
 # Specify the additional UPN suffix to be added to local AD
 [Parameter(Mandatory=$false, HelpMessage="What UPN suffix do you want to add to local AD?")][string]$upn
+[Parameter(Mandatory=$false, HelpMessage="What OU do you want to search for local AD users?")][string]$OU
 
 #region check if the script is running with administrative privileges
 if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
@@ -75,7 +76,9 @@ if (-not (Get-MgContext)) {
 # The ImmutableId is the ObjectGUID of the local AD user, converted to a base64 string
 # The ObjectGUID is the unique identifier for the user in local AD
 # A powershell version of ldifde -f export.txt -r "(Userprincipalname=*)" -l "objectGuid, userPrincipalName"
-$OU = Read-Host 'Enter the full OU to search for local AD users (e.g. "OU=Users_Staff,DC=domain,DC=local")'
+if (-not $OU){
+    $OU = Read-Host 'Enter the full OU to search for local AD users (e.g. "OU=Users_Staff,DC=domain,DC=local")'
+}
 Get-ADUser -Filter * -SearchBase $OU -properties * | Select-Object UserPrincipalName,ObjectGUID,@{n="ImmutableID";e={[System.Convert]::ToBase64String($_.ObjectGUID.tobytearray())} },EmailAddress |Export-CSV C:\Testing\immutableIDs.csv -NoClobber -NoTypeInformation
 #endregion
 #region Import the CSV file
