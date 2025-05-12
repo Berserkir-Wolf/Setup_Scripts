@@ -7,13 +7,15 @@
 # Description: This script matches the Entra ID with the local Active Directory.
 # It ensures that the local Active Directory user accounts are in sync with the Entra ID.
 # --------------------------------------------------------
-
 <#
 .SYNOPSIS
     This script takes the ImmutableId of local AD objects and attaches them to the matching object in Entra ID.
     .NOTES
     This script requires the Microsoft.Graph.Users and ActiveDirectory modules to be installed.
 #>
+# Specify the additional UPN suffix to be added to local AD
+[Parameter(Mandatory=$false, HelpMessage="What UPN suffix do you want to add to local AD?")][string]$upn
+
 #region check if the script is running with administrative privileges
 if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
     Write-Host "This script requires administrative privileges. Please run it as an administrator."
@@ -38,6 +40,26 @@ if (-not (Get-Module -ListAvailable -Name ActiveDirectory)) {
     Import-Module ActiveDirectory
 }
 #endregion
+#region Add UPN suffix to local AD if specified
+if ($upn) {
+    $localupn = (Get-ADForest).UPNSuffixes[0]
+    Write-Host "Local AD UPN suffix is $localupn"
+    $localAD = Get-ADForest
+    $localAD | Set-ADForest -UPNSuffixes @{Add=$upn}
+    Write-Host "Added UPN suffix $upn to local AD"
+    Write-Host "Local AD UPN suffixes are now $($localAD.UPNSuffixes)"
+    # Update local AD users with the new UPN suffix
+    $ADusers = Get-ADUser -Filter * -SearchBase "OU=Users_Staff, DC=nolantest,DC=local" -properties *
+    foreach ($ADuser in $ADusers) {
+        $newUPN = "$($ADuser.SamAccountName)@$upn"
+        Set-ADUser -Identity $ADuser -UserPrincipalName $newUPN
+        Write-Host "Updated UPN for user $($ADuser.SamAccountName) to $newUPN"
+    }
+} else {
+    Write-Host "No UPN suffix specified. Skipping UPN suffix addition."
+}
+#endregion
+#region check if the Microsoft.Graph.Users module is installed
 #region connect to Entra ID via Microsoft.Graph.Users
 Connect-MgGraph -Scopes "User.ReadWrite.All", "Directory.ReadWrite.All", "User.ManageIdentities.All"
 if (-not (Get-MgContext)) {
