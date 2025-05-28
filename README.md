@@ -8,10 +8,11 @@ For some, it is recommended to download and run the file as they support paramet
 
 | Script | Command |
 | ---- | ---- |
-| Set-DefaultProfile | `irm https://github.com/Berserkir-Wolf/Setup_Scripts/raw/refs/heads/main/Start-PCSetup/Start-PCSetup.ps1 \| iex` |
+| Set-DefaultProfile | `irm https://github.com/Berserkir-Wolf/Setup_Scripts/raw/refs/heads/main/Set-DefaultProfile/Set-DefaultProfile.ps1 \| iex` |
 | Start-PCSetup | `irm https://raw.githubusercontent.com/Berserkir-Wolf/Setup_Scripts/refs/heads/main/Start-PCSetup/Start-PCSetup.ps1 \| iex` |
 | Start-TenantConfiguration | `irm https://raw.githubusercontent.com/Berserkir-Wolf/Setup_Scripts/refs/heads/main/Start-TenantConfiguration/Start-TenantConfiguration.psm1 \| iex` |
 | Match-AzureAD | _Use downloaded file with parameters_ |
+| Remove-DomainFederation | `irm https://raw.githubusercontent.com/Berserkir-Wolf/Setup_Scripts/refs/heads/main/Snippets/Remove-DomainFederation.ps1 \| iex` |
 
 ## Set-DefaultProfile
 
@@ -104,3 +105,9 @@ This is the Organisational Unit to search for local users. It must be entered in
 - UPN  
 This is the new UPN suffix to attach to the domain and shift all the users to.  
 It should be the same as the mailaddress used to sign on in Azure/Entra/365.
+
+## Remove-DomainFederation
+
+When a domain/tenant is set up via some providers (like GoDaddy), they're set up as a _federated_ domain - which means that the manual admin panels get redirected to the provider ones.  
+This can make it near impossible to remove the relationship with the provider.  
+This script connects to the Microsoft.Graph endpoint, queries the domains attached, and allows for changing the domain from 'Federated' to 'Managed' - meaning you can actually manage the full 365 tenant and subscriptions over and above what the existing provider is able to provide (or be able to switch providers away from them).
