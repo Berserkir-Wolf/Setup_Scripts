@@ -15,7 +15,7 @@
 #>
 # Specify the additional UPN suffix to be added to local AD
 [Parameter(Mandatory=$false, HelpMessage="What UPN suffix do you want to add to local AD?")][string]$upn
-[Parameter(Mandatory=$false, HelpMessage="What OU do you want to search for local AD users?")][string]$OU
+[Parameter(Mandatory=$false, HelpMessage="What OU do you want to search for local AD users? (ie OU=Users_Staff, DC=domain,DC=local)")][string]$OU
 
 #region check if the script is running with administrative privileges
 if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
@@ -50,7 +50,10 @@ if ($upn) {
     Write-Host "Added UPN suffix $upn to local AD"
     Write-Host "Local AD UPN suffixes are now $($localAD.UPNSuffixes)"
     # Update local AD users with the new UPN suffix
-    $ADusers = Get-ADUser -Filter * -SearchBase "OU=Users_Staff, DC=nolantest,DC=local" -properties *
+    if (-not $OU) {
+        $OU = Read-Host 'Enter the full OU to search for local AD users (e.g. "OU=Users_Staff,DC=domain,DC=local")'
+    }   
+    $ADusers = Get-ADUser -Filter * -SearchBase $OU -properties *
     foreach ($ADuser in $ADusers) {
         $newUPN = "$($ADuser.SamAccountName)@$upn"
         Set-ADUser -Identity $ADuser -UserPrincipalName $newUPN
