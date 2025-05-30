@@ -13,6 +13,7 @@ For some, it is recommended to download and run the file as they support paramet
 | Start-TenantConfiguration | `irm https://raw.githubusercontent.com/Berserkir-Wolf/Setup_Scripts/refs/heads/main/Start-TenantConfiguration/Start-TenantConfiguration.psm1 \| iex` |
 | Match-AzureAD | _Use downloaded file with parameters_ |
 | Remove-DomainFederation | `irm https://raw.githubusercontent.com/Berserkir-Wolf/Setup_Scripts/refs/heads/main/Snippets/Remove-DomainFederation.ps1 \| iex` |
+| Get-MFAUserMethods | `irm https://raw.githubusercontent.com/Berserkir-Wolf/Setup_Scripts/refs/heads/main/Snippets/Get-MFAUserMethods.ps1 \| iex` |
 
 ## Set-DefaultProfile
 
@@ -111,3 +112,9 @@ It should be the same as the mailaddress used to sign on in Azure/Entra/365.
 When a domain/tenant is set up via some providers (like GoDaddy), they're set up as a _federated_ domain - which means that the manual admin panels get redirected to the provider ones.  
 This can make it near impossible to remove the relationship with the provider.  
 This script connects to the Microsoft.Graph endpoint, queries the domains attached, and allows for changing the domain from 'Federated' to 'Managed' - meaning you can actually manage the full 365 tenant and subscriptions over and above what the existing provider is able to provide (or be able to switch providers away from them).
+
+## Get-MFAUserMethods
+
+This script uses the Microsoft Graph API to get a list of all users in a Microsoft Entra Tenant and retrieve what methods of MFA are set up for each user, dumping out to a csv file.  
+By default, this file is C:\Tools\MFAUsers_*yyyyMMddHHmm*.csv. It builds the timestamp on the fly.  
+This does not check which method is set as primary, and because of how Microsoft Graph reports it it does not format it nicely by default (not all columns will line up, at least for now).
