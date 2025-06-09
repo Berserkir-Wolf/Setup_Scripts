@@ -57,7 +57,7 @@ Functions needed:
   - [ ] Outlook Classic
   - [ ] Acrobat
   - [ ] Chrome
-  - [ ] Teamviewer
+  - [ ] TeamViewer
     - [ ] Place in C:\Users\Public\Downloads
     - [ ] Place shortcut in C:\Users\Public\Desktop
   - [ ] Office
