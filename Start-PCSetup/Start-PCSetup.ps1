@@ -21,6 +21,7 @@ function Start-PCSetup {
     }
     Remove-ManufacturerBloat -Manufacturer $Manufacturer
     Remove-MicrosoftBloat
+    Set-LanguageOptions -Language "en-NZ" -Region "NZ"
 }
 
 Remove-ManufacturerBloat{
@@ -31,7 +32,7 @@ Remove-ManufacturerBloat{
     switch ($Manufacturer) {
         "HP" {
             Write-Host "Removing HP bloatware..."
-            # Add commands to remove HP bloatware here
+            Remove-HPBloatware
         }
         "Lenovo" {
             Write-Host "Removing Lenovo bloatware..."
@@ -49,27 +50,19 @@ Remove-ManufacturerBloat{
 
 Remove-MicrosoftBloat{
     param(
-        [string[]]$MicrosoftBloat = @("Xbox","Mail","Weather","News","Sports","Money","Maps","Movies & TV")
+        [string[]]$MicrosoftBloat = @("Microsoft.XboxGameCallableUI","Microsoft.XboxIdentityProvider","Microsoft.XboxSpeechToTextOverlay",
+                                        "Microsoft.XboxGameOverlay","Microsoft.XboxApp","Microsoft.Xbox.TCUI","Microsoft.XboxGamingOverlay",
+                                        "Microsoft.OutlookforWindows")
     )
-    ForEach($Bloatware in $MicrosoftBloat) {
-        Write-Host "Removing $Bloatware..."
+    ForEach($Program in $MicrosoftBloat) {
+        Write-Host "Removing $Program..."
         # Remove the specified Microsoft bloatware
-        Get-AppxPackage -Name $BloatwareBloat -AllUsers | ForEach-Object {
+        Get-AppxPackage -Name $Program -AllUsers | ForEach-Object {
             Remove-AppxPackage -Package $_.PackageFullName -ErrorAction SilentlyContinue
         }
+        Remove-AppxProvisionedPackage -Online -PackageName $Program -ErrorAction Stop
     }
         Write-Host "Microsoft bloatware removal completed."
-    }
-
-    Set-LanguageOptions{
-        param(
-            [string]$Language = "en-NZ",
-            [string]$Region = "NZ"
-        )
-        # Set the language and region options
-        Set-WinUserLanguageList -Language $Language -Force
-        Set-WinSystemLocale -SystemLocale $Region
-        Set-Culture -CultureInfo $Language
     }
 
 function Remove-HPBloatware {
@@ -167,18 +160,31 @@ function Remove-HPBloatware {
         }
     }
 
-#Try to remove all HP Wolf Security apps using msiexec
-$InstalledWolfSecurityPrograms = Get-WmiObject Win32_Product | Where-Object { $_.name -like "HP Wolf Security*" }
-ForEach ($InstalledWolfSecurityProgram in $InstalledWolfSecurityPrograms) {
-    try {
-        if ($null -ne $InstalledWolfSecurityProgram.IdentifyingNumber) {
-            Start-Process -FilePath msiexec.exe -ArgumentList @("/x $($InstalledWolfSecurityProgram.IdentifyingNumber)", "/quiet", "/noreboot") -Wait
-            Write-Host "Attempting to uninstall as MSI package: [$($InstalledWolfSecurityProgram.Name)]..."
+    #Try to remove all HP Wolf Security apps using msiexec
+    $InstalledWolfSecurityPrograms = Get-WmiObject Win32_Product | Where-Object { $_.name -like "HP Wolf Security*" }
+    ForEach ($InstalledWolfSecurityProgram in $InstalledWolfSecurityPrograms) {
+        try {
+            if ($null -ne $InstalledWolfSecurityProgram.IdentifyingNumber) {
+                Start-Process -FilePath msiexec.exe -ArgumentList @("/x $($InstalledWolfSecurityProgram.IdentifyingNumber)", "/quiet", "/noreboot") -Wait
+                Write-Host "Attempting to uninstall as MSI package: [$($InstalledWolfSecurityProgram.Name)]..."
+            }
+            else { Write-Warning -Message "Can't find MSI package: [$($InstalledWolfSecurityProgram.Name)]" }
         }
-        else { Write-Warning -Message "Can't find MSI package: [$($InstalledWolfSecurityProgram.Name)]" }
-    }
-    catch {
-        Write-Warning -Message "Failed to uninstall MSI package: [$($InstalledWolfSecurityProgram.Name)]"
+        catch {
+            Write-Warning -Message "Failed to uninstall MSI package: [$($InstalledWolfSecurityProgram.Name)]"
+        }
     }
 }
+
+# Function to set language and region options
+function Set-LanguageOptions{
+    param(
+        [string]$Language = "en-NZ",
+        [string]$Region = "NZ"
+    )
+    # Set the language and region options
+    Set-WinUserLanguageList -Language $Language -Force
+    Set-WinSystemLocale -SystemLocale $Region
+    Set-Culture -CultureInfo $Language
 }
+#endregion
