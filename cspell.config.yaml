@@ -3,8 +3,12 @@ ignorePaths: []
 dictionaryDefinitions: []
 dictionaries: []
 words:
-  - spamrules
+  - additionalalias
+  - dangerousfiles
   - Entra
+  - mailaddress
+  - mailalias
   - Organisational
+  - spamrules
 ignoreWords: []
 import: []

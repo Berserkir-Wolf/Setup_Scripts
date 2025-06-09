@@ -78,9 +78,9 @@ Functions needed:
 
 - [ ] Exchange
   - [ ]Convert exchange script to function(s), have triggered by parameter
-  - [ ] Make antispam a boolean, trigger if true (-spamrules=$true, default $false)
+  - [ ] Make AntiSpace a boolean, trigger if true (-spamrules=$true, default $false)
   - [ ] Add extra filters to list
-    - [ ] Attachment types etc (-dangerousfiles=$true?, default=$false)
+    - [ ] Attachment types etc (-DangerousFiles=$true?, default=$false)
 - [ ] Sharepoint
   - [X] Allow setting parameters for tenant name
   - [X] Add function to rename communications folder to work
@@ -89,9 +89,9 @@ Functions needed:
   - [ ] Set up functions to activate if relevant parameter not blank
     - [ ] if tenant specified do rename
     - [ ] if folders specified do create
-    - [ ] if exchangerules is not false do rules
-    - [ ] if additionalalias is true add additional mail addresses
-      - [ ] If $add alias, get all mailboxes and add additional mailalias of "smtp:name@$additionalalias" for each.
+    - [ ] if ExchangeRules is not false do rules
+    - [ ] if AddAlias is true add additional mail addresses
+      - [ ] If $AddAlias, get all mailboxes and add additional mailalias of "smtp:name@$AdditionalAlias" for each.
 
 ## Match-AzureAD
 
