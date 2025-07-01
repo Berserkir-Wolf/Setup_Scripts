@@ -10,6 +10,8 @@
 # It is recommended to run it in a PowerShell session with elevated permissions.
 # --------------------------------------------------------
 
+Start-PCSetup -Manufacturer (Read-Host -Prompt "What manufacturer is this PC? (HP, Lenovo, Generic)")
+
 function Start-PCSetup {
     param(
         [Parameter(Mandatory=$true, HelpMessage="What manufacturer is this PC?")][string]$Manufacturer       
@@ -24,7 +26,7 @@ function Start-PCSetup {
     Set-LanguageOptions -Language "en-NZ" -Region "NZ"
 }
 
-Remove-ManufacturerBloat{
+function Remove-ManufacturerBloat{
     param(
         [string]$Manufacturer = ""
     )
@@ -48,7 +50,7 @@ Remove-ManufacturerBloat{
     }
 }
 
-Remove-MicrosoftBloat{
+function Remove-MicrosoftBloat{
     param(
         [string[]]$MicrosoftBloat = @("Microsoft.XboxGameCallableUI","Microsoft.XboxIdentityProvider","Microsoft.XboxSpeechToTextOverlay",
                                         "Microsoft.XboxGameOverlay","Microsoft.XboxApp","Microsoft.Xbox.TCUI","Microsoft.XboxGamingOverlay",
