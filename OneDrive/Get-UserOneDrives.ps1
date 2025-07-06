@@ -46,7 +46,7 @@ Function Connect_MgGraph
   if(($TenantId -ne "") -and ($ClientId -ne "") -and ($CertificateThumbprint -ne "")){  
     Connect-MgGraph  -TenantId $TenantId -AppId $ClientId -CertificateThumbprint $CertificateThumbprint 
   }else{
-    Connect-MgGraph -Scopes "files.readwrite.all","Sites.readwrite.all","directory.readwrite.all"
+    Connect-MgGraph -Scopes "files.readwrite.all","Sites.readwrite.all","directory.readwrite.all","user.readwrite.all"
   }
 }
 Connect_MgGraph
@@ -56,22 +56,25 @@ if((Get-MgContext) -ne ""){
 }
 
 
-if( $MGGraphConnected){
-foreach ($user in $users) {
-     $userPrincipalName = $user.Mail
-     $userObject = Get-MgUser -Filter "userPrincipalName eq '$userPrincipalName'"
-     if ($userObject) {
-         $userOneDrive = Get-MgUserDefaultDrive -UserId $userObject.id
-         $oneDriveWebUrl = $userOneDrive.webUrl
+if($MGGraphConnected){
+    $outfile = $OutFile
+    if (Test-Path $outfile) {  
+        Write-Host "Output file already exists. Deleting it..." -ForegroundColor Yellow
+        Remove-Item $outfile -Force
+    }
+    foreach ($user in $Users) {
+        $userPrincipalName = $user.Mail
+        $userObject = Get-MgUser -UserId $userPrincipalName
+        if ($userObject) {
+            $userOneDrive = Get-MgUserDefaultDrive -UserId $userObject.id
+            $oneDriveWebUrl = $userOneDrive.webUrl
 
-         Write-Host "OneDrive WebURL for ${userPrincipalName}: $oneDriveWebUrl"
-         $user.OneDriveURL = $oneDriveWebUrl
+            Write-Host "OneDrive WebURL for ${userPrincipalName}: $oneDriveWebUrl"
+            $user.OneDriveURL = $oneDriveWebUrl
 
-  Add-Content -Path $outfile -Value $user
-
-  } else {
-  Write-Host "User not found: $userPrincipalName"
-  }
-
- }
+        Add-Content -Path $outfile -Value "$userPrincipalName,$oneDriveWebUrl"
+        } else {
+        Write-Host "User not found: $userPrincipalName"
+        }
+    }
 }
