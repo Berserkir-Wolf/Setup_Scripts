@@ -38,10 +38,10 @@ Function Connect-Site {
     Connect-PnPOnline -Url $SiteUrl -Interactive
     if ($?) {
         Write-Host "Connected to $SiteUrl successfully." -ForegroundColor Green
-        Log-Message "Connected to $SiteUrl successfully." $LogFile
+        Write-LogEntry "Connected to $SiteUrl successfully." $LogFile
     } else {
         Write-Host "Failed to connect to $SiteUrl." -ForegroundColor Red
-        Log-Message "Failed to connect to $SiteUrl." $LogFile
+        Write-LogEntry "Failed to connect to $SiteUrl." $LogFile
         Exit
     }
 }
@@ -57,7 +57,7 @@ Function Move-Files {
         [string]$DestinationLibrary
     )
     Write-Host "Starting file migration from $SourceLibrary to $DestinationLibrary"
-    Log-Message "Starting file migration from $SourceLibrary to $DestinationLibrary" $LogFile
+    Write-LogEntry "Starting file migration from $SourceLibrary to $DestinationLibrary" $LogFile
 
     # Get all files from the source library
     $files = Get-PnPListItem -List $SourceLibrary -PageSize 1000 -ScriptBlock { param($items) $items.Context.ExecuteQuery() } | Where-Object { $_.FileSystemObjectType -eq "File" }
@@ -67,7 +67,7 @@ Function Move-Files {
             $fileUrl = $file.FieldValues.FileRef
             $fileName = $file.FieldValues.FileLeafRef
             Write-Host "Moving file: $fileName"
-            Log-Message "Moving file: $fileName" $LogFile
+            Write-LogEntry "Moving file: $fileName" $LogFile
 
             # Download the file from source
             $tempFilePath = Join-Path -Path $env:TEMP -ChildPath $fileName
@@ -85,14 +85,14 @@ Function Move-Files {
             Remove-PnPListItem -List $SourceLibrary -Identity $file.Id -Recycle
 
             Write-Host "Successfully moved file: $fileName" -ForegroundColor Green
-            Log-Message "Successfully moved file: $fileName" $LogFile
+            Write-LogEntry "Successfully moved file: $fileName" $LogFile
         } catch {
             Write-Host "Error moving file: $fileName. $_" -ForegroundColor Red
-            Log-Message "Error moving file: $fileName. $_" $LogFile
+            Write-LogEntry "Error moving file: $fileName. $_" $LogFile
         }
     }
     Write-Host "File migration completed."
-    Log-Message "File migration completed." $LogFile
+    Write-LogEntry "File migration completed." $LogFile
 }
 Move-Files -SourceLibrary $SourceLibrary -DestinationLibrary $DestinationLibrary
 #endregion
@@ -100,5 +100,5 @@ Move-Files -SourceLibrary $SourceLibrary -DestinationLibrary $DestinationLibrary
 Disconnect-PnPOnline -Url $SourceSiteUrl
 Disconnect-PnPOnline -Url $DestinationSiteUrl
 Write-Host "Disconnected from SharePoint sites." -ForegroundColor Green
-Log-Message "Disconnected from SharePoint sites." $LogFile
+Write-LogEntry "Disconnected from SharePoint sites." $LogFile
 #endregion
