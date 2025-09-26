@@ -19,7 +19,7 @@ Param
     [Parameter(Mandatory=$false, HelpMessage="Path to log file")][string]$LogFile = "D:\Setup_Tools\SharePointMigration.log"
 )
 #region Function to log messages
-Function Log-Message {
+Function Write-LogEntry {
     Param (
         [string]$Message,
         [string]$LogFile
@@ -27,7 +27,7 @@ Function Log-Message {
     $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
     $logEntry = "$timestamp - $Message"
     Add-Content -Path $LogFile -Value $logEntry
-}  
+}
 #endregion
 #region Connect to Source and Destination Sites
 Function Connect-Site {
