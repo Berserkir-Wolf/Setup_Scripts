@@ -14,6 +14,7 @@ Param
     [Parameter(Mandatory=$false, HelpMessage="Where should the profiles be moved to?")][string]$ProfileFolder = "C:\WiFi"
 )
 
+#region Export Profiles to folder of XML files
 function ExportProfiles {
     Write-Host "Exporting WiFi profiles to $ProfileFolder"
     if (!(Test-Path -Path $ProfileFolder)) {
@@ -29,6 +30,7 @@ function ExportProfiles {
     Write-Host "Export completed."    
 }
 
+#region Import Profiles from folder of XML files
 function ImportProfiles {
     Write-Host "Importing WiFi profiles from $ProfileFolder"
     $xmlFiles = Get-ChildItem -Path $ProfileFolder -Filter *.xml
