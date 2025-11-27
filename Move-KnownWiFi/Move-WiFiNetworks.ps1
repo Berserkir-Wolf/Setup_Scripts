@@ -9,6 +9,7 @@
 # Description: This script exports WiFi profiles from one machine and allows importing them to another machine.
 # --------------------------------------------------------
 #>
+[CmdletBinding()]
 Param
 (
     [Parameter(Mandatory=$false, HelpMessage="Where should the profiles be moved to?")][string]$ProfileFolder = "C:\WiFi"
