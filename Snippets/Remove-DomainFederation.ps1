@@ -29,13 +29,13 @@ if ($domainToUpdate) {
     Write-Host "Domain not found. Please check the domain name."
 }
 # Run the command below and confirm that your GoDaddy.com domain says "Federated":
-
 Get-MgDomain
 
 # The below command will update the domain to be "Managed" - replace with your GoDaddy domain:
-
 Update-MgDomain -DomainId $domainToUpdate.ID -Authentication Managed
 
 # Run the below command again to confirm that the GoDaddy domain now says Managed instead of Federated:
-
 Get-MgDomain
+
+# Disconnect from Microsoft Graph
+Disconnect-MgGraph
