@@ -38,19 +38,17 @@ if (-not (Get-ExchangeOnlineConnection)) {
     Write-Host "Getting all existing users..."
     $users = Get-Mailbox -ResultSize Unlimited
     Write-Host "Retrieved $($users.Count) users."
+    # Go through all users and add primary domain, skipping Discovery Search Mailbox
     ForEach ($user in $users) {
+        if($($user.Name).StartsWith("DiscoverySearchMailbox")){
+            Write-Host "Skipping $($user.Name)"
+        } else {
         Write-Host "User: $($user.UserPrincipalName) - Primary SMTP: $($user.PrimarySmtpAddress)"
+        Write-Host "Adding $($user.Alias)@$NewDomain to $($user.UserPrincipalName)"
         Set-Mailbox -Identity $user.UserPrincipalName -EmailAddresses @{Add="$($user.Alias)@$NewDomain"}
         Set-Mailbox -Identity $user.UserPrincipalName -PrimarySmtpAddress "$($user.Alias)@$NewDomain"
         Write-Host "Updated Primary SMTP to: $($user.Alias)@$NewDomain"
+        }
     }
 }
 #endregion
-
-
-Import-Csv $UserstoChange | ForEach-Object {
-  $upn = $_.UserPrincipalName
-  $new = $_.NewPrimarySmtpAddress
-  Set-Mailbox -Identity $upn -EmailAddresses @{Add=$new}
-  Set-Mailbox -Identity $upn -PrimarySmtpAddress $new
-}
