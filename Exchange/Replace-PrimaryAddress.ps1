@@ -43,11 +43,12 @@ if (-not (Get-ExchangeOnlineConnection)) {
         if($($user.Name).StartsWith("DiscoverySearchMailbox")){
             Write-Host "Skipping $($user.Name)"
         } else {
+        $newaddress = ($($user.WindowsEmailAddress)).Replace("@gis.","@")
         Write-Host "User: $($user.UserPrincipalName) - Primary SMTP: $($user.PrimarySmtpAddress)"
-        Write-Host "Adding $($user.Alias)@$NewDomain to $($user.UserPrincipalName)"
-        Set-Mailbox -Identity $user.UserPrincipalName -EmailAddresses @{Add="$($user.Alias)@$NewDomain"}
-        Set-Mailbox -Identity $user.UserPrincipalName -PrimarySmtpAddress "$($user.Alias)@$NewDomain"
-        Write-Host "Updated Primary SMTP to: $($user.Alias)@$NewDomain"
+        Set-Mailbox -Identity $user.UserPrincipalName -EmailAddresses @{Add="$newaddress"}
+        Write-Host "Adding $newaddress to $($user.UserPrincipalName)"
+        Set-Mailbox -Identity $user.UserPrincipalName -PrimarySmtpAddress "$newaddress"
+        Write-Host "Updated Primary SMTP to: $newaddress"
         }
     }
 }
