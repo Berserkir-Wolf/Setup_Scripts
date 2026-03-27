@@ -134,7 +134,7 @@ param(
 [string[]]$MailDomain
 )
 $disclaimer = "<p style='background-color:#FFEB9C; width: 850px; border:2px; border-top-style:solid; border-bottom-style:solid; border-color:#FF0000; padding: 0.3em;'><span style='font-size:9pt;font-family:Arial;color:red'><b>CAUTION:</span></b><span style='font-size:9pt;font-family:Arial;color:black'> This email originated outside your Organisation.  <b>DO NOT CLICK</b> on links, attachments, or action requests unless you recognise the sender and know the content is safe.  &nbsp;⚠  If you think it is suspicious, please <b>REPORT IT</b> to your manager</span>.</p>"
-New-TransportRule -Name 'External Sender Disclaimer' -Priority 4 -Mode Enforce -SenderAddressLocation Header -RecipientAddressType Resolved -FromScope NotInOrganization -SentToScope InOrganization -ExceptIfSubjectOrBodyContainsWords "This email originated outside your Organisation" -ApplyHtmlDisclaimerFallbackAction Wrap -ApplyHtmlDisclaimerLocation Prepend -ApplyHtmlDisclaimerText $disclaimer
+New-TransportRule -Name 'External Sender Disclaimer' -Priority 3 -Mode Enforce -SenderAddressLocation Header -RecipientAddressType Resolved -FromScope NotInOrganization -SentToScope InOrganization -ExceptIfSubjectOrBodyContainsWords "This email originated outside your Organisation" -ApplyHtmlDisclaimerFallbackAction Wrap -ApplyHtmlDisclaimerLocation Prepend -ApplyHtmlDisclaimerText $disclaimer
 
 }
 #endregion
