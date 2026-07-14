@@ -8,7 +8,7 @@
 # - Device name
 # - Operating system
 # - Browser
-# - Whether the device is manageds
+# - Whether the device is managed
 Get-MgAuditLogSignIn | Select-Object userDisplayName, userPrincipalName, createdDateTime, clientAppUsed, @{n='DeviceID'; e={$_.deviceDetail.DeviceId}}, @{n='DeviceName'; e={$_.deviceDetail.DisplayName}}, @{n='OS'; e={$_.deviceDetail.operatingSystem}}, @{n='Browser'; e={$_.deviceDetail.browser}}, @{n='IsManaged'; e={$_.deviceDetail.isManaged}}
 
 # Get all users and their last login date from Microsoft Graph API and select relevant properties for display.
