@@ -14,10 +14,10 @@ Get-MgAuditLogSignIn | Select-Object userDisplayName, userPrincipalName, created
 # Get all users and their last login date from Microsoft Graph API and select relevant properties for display.
 Import-Module Microsoft.Graph.Users
 Connect-MgGraph -Scopes "AuditLog.Read.All", "User.Read.All"
-$Properties = @('DisplayName', 'UserPrincipalName', 'SignInActivity')
+$Properties = @('DisplayName', 'UserPrincipalName', 'SignInActivity', 'Mail', 'AccountEnabled')
 $AllUsers = Get-MgUser -All -Property $Properties
 $AllUsers | ForEach-Object {
    $LastLoginDate = $_.SignInActivity.LastSignInDateTime
    $_ | Add-Member -MemberType NoteProperty -Name LastLoginDate -Value $LastLoginDate -Force
 }
-$AllUsers | Format-Table DisplayName, LastLoginDate
+$AllUsers | Format-Table DisplayName, UserPrincipalName, LastLoginDate, Mail, AccountEnabled -AutoSize
